@@ -1,45 +1,45 @@
 # .github/workflows/run_follow.yml
-name: GitGrow Follow (Scheduled)
+# name: GitGrow Follow (Scheduled)
 # This workflow is used to run the GitGrowBot follow bot on a schedule.
 # It is triggered every hour at minute 5, and can also be run manually.
 # The follow bot processes a random number of new follows (5–155) each run.
 # The unfollow bot runs separately on its own schedule.
 
-on:
-  schedule:
-    - cron: '5 */1 * * *'     # every hour at minute 5 (UTC)
-  workflow_dispatch: {}      # allows manual triggering
+# on:
+#   schedule:
+#     - cron: '5 */1 * * *'      # every hour at minute 5 (UTC)
+#   workflow_dispatch: {}      # allows manual triggering
 
-jobs:
-  follow:
-    name: Run Follow Bot
-    if: github.actor == vars.BOT_USER || github.repository_owner == vars.BOT_USER
-    runs-on: ubuntu-latest
+# jobs:
+#   follow:
+#     name: Run Follow Bot
+#     if: github.actor == vars.BOT_USER || github.repository_owner == vars.BOT_USER
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install PyGithub
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install PyGithub
 
-      - name: Generate random follow batch size
-        run: |
-          BATCH_SIZE=$(shuf -i 5-155 -n1)
-          echo "FOLLOWERS_PER_RUN=$BATCH_SIZE" >> $GITHUB_ENV
-          echo "Generated FOLLOWERS_PER_RUN=$BATCH_SIZE"
+#       - name: Generate random follow batch size
+#         run: |
+#           BATCH_SIZE=$(shuf -i 5-155 -n1)
+#           echo "FOLLOWERS_PER_RUN=$BATCH_SIZE" >> $GITHUB_ENV
+#           echo "Generated FOLLOWERS_PER_RUN=$BATCH_SIZE"
 
-      - name: Run follow bot
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}        # personal access token with user:follow scope
-          USERNAME_FILE: config/usernames.txt
-          WHITELIST_FILE: config/whitelist.txt
-          FOLLOWERS_PER_RUN: ${{ env.FOLLOWERS_PER_RUN }}
-        run: python scripts/gitgrow.py
+#       - name: Run follow bot
+#         env:
+#           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}          # personal access token with user:follow scope
+#           USERNAME_FILE: config/usernames.txt
+#           WHITELIST_FILE: config/whitelist.txt
+#           FOLLOWERS_PER_RUN: ${{ env.FOLLOWERS_PER_RUN }}
+#         run: python scripts/gitgrow.py
